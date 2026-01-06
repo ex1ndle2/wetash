@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Качество воздуха - EcoFamily{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        <h1><i class="bi bi-wind"></i> Качество воздуха в Ташкенте</h1>
+        <p class="lead text-muted">Мониторинг загрязнения воздуха в реальном времени</p>
+    </div>
+</div>
+
+<!-- Выбор района -->
+<div class="row mb-4">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <label class="form-label"><i class="bi bi-geo-alt"></i> Выберите район:</label>
+                <select class="form-select" onchange="window.location.href='?district=' + this.value">
+                    {% for district in districts %}
+                    <option value="{{ district.district }}" {% if district.district == selected %}selected{% endif %}>
+                        {{ district.district }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Текущее качество воздуха -->
+{% if air %}
+<div class="row mb-5">
+    <div class="col-md-8 mx-auto">
+        <div class="card {% if air.aqi <= 50 %}aqi-good{% elif air.aqi <= 100 %}aqi-moderate{% else %}aqi-bad{% endif %} text-white">
+            <div class="card-body text-center p-5">
+                <h2 class="mb-3">{{ selected }}</h2>
+                <div style="font-size: 5rem; font-weight: bold;">{{ air.aqi }}</div>
+                <h4 class="mb-3">AQI (Индекс качества воздуха)</h4>
+                <div class="mb-4">
+                    {% if air.aqi <= 50 %}
+                        <i class="bi bi-emoji-smile-fill" style="font-size: 3rem;"></i>
+                        <h5>Отличное качество</h5>
+                        <p>Воздух чистый, можно гулять и заниматься спортом на улице</p>
+                    {% elif air.aqi <= 100 %}
+                        <i class="bi bi-emoji-neutral-fill" style="font-size: 3rem;"></i>
+                        <h5>Умеренное качество</h5>
+                        <p>Воздух приемлемый, но чувствительным людям лучше ограничить активность</p>
+                    {% else %}
+                        <i class="bi bi-emoji-frown-fill" style="font-size: 3rem;"></i>
+                        <h5>Плохое качество</h5>
+                        <p>Загрязнение высокое. Избегайте долгих прогулок, используйте маску</p>
+                    {% endif %}
+                </div>
+                <small><i class="bi bi-clock"></i> Обновлено: {{ air.date|date:"d.m.Y" }}</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Рекомендации -->
+<div class="row mb-5">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header" style="background: var(--eco-green); color: white;">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Рекомендации</h5>
+            </div>
+            <div class="card-body">
+                {% if air.aqi <= 50 %}
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Идеально для прогулок и занятий спортом</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Можно проветривать помещения</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Отличное время для активного отдыха</li>
+                    <li class="mb-0"><i class="bi bi-check-circle text-success"></i> Детям безопасно играть на улице</li>
+                </ul>
+                {% elif air.aqi <= 100 %}
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><i class="bi bi-exclamation-circle text-warning"></i> Ограничьте длительную физическую активность</li>
+                    <li class="mb-2"><i class="bi bi-exclamation-circle text-warning"></i> Чувствительным людям лучше оставаться дома</li>
+                    <li class="mb-2"><i class="bi bi-exclamation-circle text-warning"></i> Проветривайте помещения утром и вечером</li>
+                    <li class="mb-0"><i class="bi bi-exclamation-circle text-warning"></i> Следите за самочувствием</li>
+                </ul>
+                {% else %}
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><i class="bi bi-x-circle text-danger"></i> Избегайте прогулок и физической активности</li>
+                    <li class="mb-2"><i class="bi bi-x-circle text-danger"></i> Закройте окна и двери</li>
+                    <li class="mb-2"><i class="bi bi-x-circle text-danger"></i> Используйте маску при выходе на улицу</li>
+                    <li class="mb-2"><i class="bi bi-x-circle text-danger"></i> Особенно важно для детей и пожилых</li>
+                    <li class="mb-0"><i class="bi bi-x-circle text-danger"></i> Используйте очистители воздуха дома</li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Шкала AQI -->
+<div class="row mb-5">
+    <div class="col-md-10 mx-auto">
+        <h3 class="text-center mb-4"><i class="bi bi-bar-chart"></i> Что означают показатели AQI?</h3>
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>AQI</th>
+                                <th>Уровень</th>
+                                <th>Цвет</th>
+                                <th>Влияние на здоровье</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>0-50</strong></td>
+                                <td><span class="badge" style="background: #2ecc71;">Отлично</span></td>
+                                <td><div style="width: 30px; height: 30px; background: #2ecc71; border-radius: 5px;"></div></td>
+                                <td>Качество воздуха хорошее, загрязнение минимально</td>
+                            </tr>
+                            <tr>
+                                <td><strong>51-100</strong></td>
+                                <td><span class="badge" style="background: #f1c40f;">Умеренно</span></td>
+                                <td><div style="width: 30px; height: 30px; background: #f1c40f; border-radius: 5px;"></div></td>
+                                <td>Приемлемо для большинства, но чувствительным людям стоит быть осторожными</td>
+                            </tr>
+                            <tr>
+                                <td><strong>101-150</strong></td>
+                                <td><span class="badge" style="background: #e67e22;">Нездорово</span></td>
+                                <td><div style="width: 30px; height: 30px; background: #e67e22; border-radius: 5px;"></div></td>
+                                <td>Чувствительные группы могут испытывать проблемы со здоровьем</td>
+                            </tr>
+                            <tr>
+                                <td><strong>151-200</strong></td>
+                                <td><span class="badge" style="background: #e74c3c;">Вредно</span></td>
+                                <td><div style="width: 30px; height: 30px; background: #e74c3c; border-radius: 5px;"></div></td>
+                                <td>Все могут начать испытывать негативные последствия</td>
+                            </tr>
+                            <tr>
+                                <td><strong>201-300</strong></td>
+                                <td><span class="badge" style="background: #9b59b6;">Очень вредно</span></td>
+                                <td><div style="width: 30px; height: 30px; background: #9b59b6; border-radius: 5px;"></div></td>
+                                <td>Предупреждение о вреде для здоровья, все могут испытывать серьёзные последствия</td>
+                            </tr>
+                            <tr>
+                                <td><strong>301+</strong></td>
+                                <td><span class="badge" style="background: #8b0000;">Опасно</span></td>
+                                <td><div style="width: 30px; height: 30px; background: #8b0000; border-radius: 5px;"></div></td>
+                                <td>Экстренное предупреждение — серьёзная угроза здоровью всего населения</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Советы для здоровья -->
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <h3 class="text-center mb-4"><i class="bi bi-heart-pulse"></i> Советы для здоровья</h3>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-moisture" style="font-size: 3rem; color: var(--sky-blue);"></i>
+                        <h5 class="mt-3">Увлажняйте воздух</h5>
+                        <p class="text-muted">Используйте увлажнители в помещении для защиты дыхательных путей</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-cup-hot" style="font-size: 3rem; color: #e67e22;"></i>
+                        <h5 class="mt-3">Пейте больше воды</h5>
+                        <p class="text-muted">Помогает вывести токсины и очистить организм</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-flower1" style="font-size: 3rem; color: var(--eco-green);"></i>
+                        <h5 class="mt-3">Комнатные растения</h5>
+                        <p class="text-muted">Некоторые растения естественным образом очищают воздух в помещении</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

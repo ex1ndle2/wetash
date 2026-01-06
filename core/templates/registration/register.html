@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - EcoFamily</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --eco-green: #2ecc71;
+            --eco-dark: #27ae60;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 40px 0;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .btn-eco {
+            background: linear-gradient(135deg, var(--eco-green) 0%, var(--eco-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            transition: all 0.3s;
+        }
+        
+        .btn-eco:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+            color: white;
+        }
+        
+        .alert {
+            border-radius: 10px;
+        }
+        
+        .errorlist {
+            color: #dc3545;
+            list-style: none;
+            padding: 0;
+            margin: 5px 0;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <!-- Логотип -->
+                <div class="text-center mb-4">
+                    <a href="{% url 'core:home' %}" class="text-decoration-none">
+                        <h1 style="color: var(--eco-green);">
+                            <i class="bi bi-flower1"></i> EcoFamily
+                        </h1>
+                    </a>
+                </div>
+
+                <!-- Сообщения -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Карточка регистрации -->
+                <div class="card shadow-lg">
+                    <div class="card-header text-center" style="background: linear-gradient(135deg, var(--eco-green) 0%, var(--eco-dark) 100%); color: white; padding: 30px;">
+                        <i class="bi bi-person-plus-fill" style="font-size: 3rem;"></i>
+                        <h2 class="mt-3 mb-0">Присоединяйтесь к EcoFamily!</h2>
+                        <p class="mb-0">Начните свой путь к чистому миру</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <!-- Общие ошибки формы -->
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.non_field_errors }}
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Имя пользователя -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="bi bi-person"></i> Имя пользователя
+                                </label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                    {{ form.username.errors }}
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="bi bi-envelope"></i> Email
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    {{ form.email.errors }}
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Роль -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="bi bi-people"></i> Ваша роль в семье
+                                </label>
+                                {{ form.role }}
+                                {% if form.role.errors %}
+                                    {{ form.role.errors }}
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Семья для родителя -->
+                            <div id="parentOptions" style="display: none;">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="bi bi-house-heart"></i> Настройка семьи
+                                        </h6>
+                                        <div class="mb-3">
+                                            <label class="form-label">Название семьи</label>
+                                            {{ form.family_name }}
+                                            <small class="text-muted">Создайте новую семью</small>
+                                            {% if form.family_name.errors %}
+                                                {{ form.family_name.errors }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Семья для ребенка -->
+                            <div id="childOptions" style="display: none;">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="bi bi-key"></i> Присоединение к семье
+                                        </h6>
+                                        <div class="mb-3">
+                                            <label class="form-label">Код семьи</label>
+                                            {{ form.join_family_code }}
+                                            <small class="text-muted">Введите код, который дали родители</small>
+                                            {% if form.join_family_code.errors %}
+                                                {{ form.join_family_code.errors }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Пароль -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="bi bi-lock"></i> Пароль
+                                </label>
+                                {{ form.password1 }}
+                                {% if form.password1.errors %}
+                                    {{ form.password1.errors }}
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Подтверждение пароля -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    <i class="bi bi-lock-fill"></i> Подтвердите пароль
+                                </label>
+                                {{ form.password2 }}
+                                {% if form.password2.errors %}
+                                    {{ form.password2.errors }}
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Соглашение -->
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="agree" required>
+                                <label class="form-check-label" for="agree">
+                                    Я согласен с <a href="#">условиями использования</a> и <a href="#">политикой конфиденциальности</a>
+                                </label>
+                            </div>
+                            
+                            <!-- Кнопка регистрации -->
+                            <button type="submit" class="btn btn-eco w-100 btn-lg mb-3">
+                                <i class="bi bi-check-circle"></i> Зарегистрироваться
+                            </button>
+                            
+                            <!-- Ссылка на вход -->
+                            <div class="text-center">
+                                <p class="text-muted mb-0">
+                                    Уже есть аккаунт? 
+                                    <a href="{% url 'core:login' %}" class="text-decoration-none">Войти</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Преимущества -->
+                <div class="row mt-4">
+                    <div class="col-4 text-center">
+                        <i class="bi bi-shield-check text-success" style="font-size: 2rem;"></i>
+                        <p class="small text-muted mb-0">Безопасно</p>
+                    </div>
+                    <div class="col-4 text-center">
+                        <i class="bi bi-lightning-charge text-warning" style="font-size: 2rem;"></i>
+                        <p class="small text-muted mb-0">Быстро</p>
+                    </div>
+                    <div class="col-4 text-center">
+                        <i class="bi bi-heart text-danger" style="font-size: 2rem;"></i>
+                        <p class="small text-muted mb-0">Бесплатно</p>
+                    </div>
+                </div>
+
+                <!-- Назад на главную -->
+                <div class="text-center mt-4">
+                    <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Вернуться на главную
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    function toggleFamilyOptions() {
+        const role = document.getElementById('role').value;
+        const parentOptions = document.getElementById('parentOptions');
+        const childOptions = document.getElementById('childOptions');
+        
+        if (role === 'parent') {
+            parentOptions.style.display = 'block';
+            childOptions.style.display = 'none';
+        } else if (role === 'child') {
+            parentOptions.style.display = 'none';
+            childOptions.style.display = 'block';
+        } else {
+            parentOptions.style.display = 'none';
+            childOptions.style.display = 'none';
+        }
+    }
+    
+    // Проверяем значение при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleFamilyOptions();
+    });
+    </script>
+</body>
+</html>

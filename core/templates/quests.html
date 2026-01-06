@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Квесты - EcoFamily</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --eco-green: #2ecc71;
+            --eco-dark: #27ae60;
+            --eco-light: #a8e6cf;
+            --sky-blue: #56ccf2;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--eco-green) 0%, var(--eco-dark) 100%);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white !important;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+        
+        .points-badge {
+            background: rgba(255,255,255,0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .btn-eco {
+            background: linear-gradient(135deg, var(--eco-green) 0%, var(--eco-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 30px;
+            transition: all 0.3s;
+        }
+        
+        .btn-eco:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+            color: white;
+        }
+        
+        .quest-card {
+            border-left: 4px solid var(--eco-green);
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="core:home">
+                <i class="bi bi-flower1"></i> EcoFamily
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">
+                            <i class="bi bi-house"></i> Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:air_quality' %}">
+                            <i class="bi bi-wind"></i> Воздух
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'core:quests' %}">
+                            <i class="bi bi-trophy"></i> Квесты
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:family' %}">
+                            <i class="bi bi-people"></i> Семья
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:rewards' %}">
+                            <i class="bi bi-gift"></i> Награды
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <span class="points-badge">
+                            <i class="bi bi-star-fill"></i> 150 баллов
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="container my-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="text-center mb-4">
+                    <i class="bi bi-trophy"></i> Эко-квесты
+                </h1>
+                <p class="text-center text-muted lead">Выполняйте задания и зарабатывайте баллы для своей семьи!</p>
+            </div>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-success active" onclick="filterQuests('all')">
+                                <i class="bi bi-grid"></i> Все
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" onclick="filterQuests('child')">
+                                <i class="bi bi-emoji-smile"></i> Для детей
+                            </button>
+                            <button type="button" class="btn btn-outline-info" onclick="filterQuests('parent')">
+                                <i class="bi bi-person"></i> Для родителей
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Доступные квесты -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="mb-3"><i class="bi bi-list-check"></i> Доступные квесты</h3>
+            </div>
+            
+            <!-- Квест 1 -->
+            <div class="col-md-6 mb-3 quest-item" data-role="child">
+                <div class="card quest-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">
+                                <i class="bi bi-lightbulb text-warning"></i>
+                                Выключи свет
+                            </h5>
+                            <span class="badge bg-success">+10 баллов</span>
+                        </div>
+                        <p class="card-text text-muted">Выключай свет, когда выходишь из комнаты. Экономь энергию!</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> Для детей
+                            </small>
+                            <button class="btn btn-eco btn-sm" data-bs-toggle="modal" data-bs-target="#questModal1">
+                                <i class="bi bi-check-circle"></i> Выполнить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Квест 2 -->
+            <div class="col-md-6 mb-3 quest-item" data-role="child">
+                <div class="card quest-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">
+                                <i class="bi bi-recycle text-info"></i>
+                                Собери пластик
+                            </h5>
+                            <span class="badge bg-success">+20 баллов</span>
+                        </div>
+                        <p class="card-text text-muted">Собери пластиковые бутылки и сдай их на переработку</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> Для детей
+                            </small>
+                            <button class="btn btn-eco btn-sm" data-bs-toggle="modal" data-bs-target="#questModal2">
+                                <i class="bi bi-check-circle"></i> Выполнить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Квест 3 -->
+            <div class="col-md-6 mb-3 quest-item" data-role="both">
+                <div class="card quest-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">
+                                <i class="bi bi-flower1 text-success"></i>
+                                Полей растение
+                            </h5>
+                            <span class="badge bg-success">+15 баллов</span>
+                        </div>
+                        <p class="card-text text-muted">Позаботься о комнатных или уличных растениях</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> Для всех
+                            </small>
+                            <button class="btn btn-eco btn-sm" data-bs-toggle="modal" data-bs-target="#questModal3">
+                                <i class="bi bi-check-circle"></i> Выполнить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Квест 4 -->
+            <div class="col-md-6 mb-3 quest-item" data-role="parent">
+                <div class="card quest-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">
+                                <i class="bi bi-bus-front text-primary"></i>
+                                Используй общественный транспорт
+                            </h5>
+                            <span class="badge bg-success">+25 баллов</span>
+                        </div>
+                        <p class="card-text text-muted">Откажись от машины и используй автобус или метро</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> Для родителей
+                            </small>
+                            <button class="btn btn-eco btn-sm" data-bs-toggle="modal" data-bs-target="#questModal4">
+                                <i class="bi bi-check-circle"></i> Выполнить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Выполненные квесты -->
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mb-3"><i class="bi bi-check-circle-fill text-success"></i> Мои выполненные квесты</h3>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">Выключи свет</h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock"></i> 04.01.2026 10:30
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-success mb-2">
+                                    <i class="bi bi-check-lg"></i> Одобрено
+                                </span>
+                                <br>
+                                <span class="badge bg-warning text-dark">+10 баллов</span>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <img src="https://via.placeholder.com/400x200/2ecc71/ffffff?text=Quest+Photo" class="img-fluid rounded" alt="Фото квеста">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">Полей растение</h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock"></i> 03.01.2026 18:15
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-warning">
+                                    <i class="bi bi-hourglass-split"></i> На проверке
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <img src="https://via.placeholder.com/400x200/27ae60/ffffff?text=Quest+Photo" class="img-fluid rounded" alt="Фото квеста">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Модальные окна для квестов -->
+    <div class="modal fade" id="questModal1" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background: var(--eco-green); color: white;">
+                    <h5 class="modal-title">Выключи свет</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <p>Выключай свет, когда выходишь из комнаты. Экономь энергию!</p>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-camera"></i> Загрузите фото подтверждения
+                            </label>
+                            <input type="file" class="form-control" accept="image/*" required>
+                            <small class="text-muted">Сфотографируйте результат выполнения квеста</small>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> 
+                            После загрузки фото, родитель должен будет одобрить выполнение квеста.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-eco">
+                            <i class="bi bi-upload"></i> Отправить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="bi bi-flower1"></i> EcoFamily</h5>
+                    <p>Делаем мир чище вместе!</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Контакты</h5>
+                    <p>
+                        <i class="bi bi-envelope"></i> info@ecofamily.uz<br>
+                        <i class="bi bi-phone"></i> +998 90 123 45 67
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Следите за нами</h5>
+                    <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-telegram"></i></a>
+                </div>
+            </div>
+            <hr style="background-color: rgba(255,255,255,0.3);">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2026 EcoFamily. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    function filterQuests(role) {
+        const items = document.querySelectorAll('.quest-item');
+        const buttons = document.querySelectorAll('.btn-group button');
+        
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        items.forEach(item => {
+            if (role === 'all') {
+                item.style.display = 'block';
+            } else {
+                const itemRole = item.dataset.role;
+                if (itemRole === role || itemRole === 'both') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        });
+    }
+    </script>
+</body>
+</html>

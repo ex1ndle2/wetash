@@ -1,0 +1,207 @@
+{% extends 'base.html' %} {% block content %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFamily - Советы</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --eco-green: #2ecc71;
+            --eco-dark: #27ae60;
+            --health-blue: #3498db;
+            --warning-orange: #f39c12;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+        }
+
+        .advice-card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            background: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .advice-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .icon-box {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .bg-eco-light { background-color: rgba(46, 204, 113, 0.1); color: var(--eco-green); }
+        .bg-health-light { background-color: rgba(52, 152, 219, 0.1); color: var(--health-blue); }
+        .bg-warning-light { background-color: rgba(243, 156, 18, 0.1); color: var(--warning-orange); }
+
+        .category-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--eco-green);
+            border-radius: 2px;
+        }
+
+        .daily-tip {
+            background: linear-gradient(135deg, var(--eco-green) 0%, var(--health-blue) 100%);
+            color: white;
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success mb-5" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="bi bi-flower1"></i> EcoFamily</a>
+            <div class="navbar-nav ms-auto">
+                <span class="points-badge bg-white bg-opacity-25 px-3 py-2 rounded-pill text-white">
+                    <i class="bi bi-star-fill text-warning"></i> 150 баллов
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        
+        <div class="daily-tip text-center shadow">
+            <h2 class="mb-3"><i class="bi bi-lightning-charge-fill"></i> Совет дня</h2>
+            <p class="fs-4">"Выключайте воду, пока чистите зубы. Это сэкономит до 12 литров воды в минуту!"</p>
+            <button class="btn btn-light rounded-pill mt-3 px-4">Поделиться с семьёй</button>
+        </div>
+
+        <h2 class="text-center section-title">Полезные рекомендации</h2>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card advice-card p-4">
+                    <span class="category-badge bg-eco-light">Экология</span>
+                    <div class="icon-box bg-eco-light">
+                        <i class="bi bi-recycle"></i>
+                    </div>
+                    <h4>Сортировка мусора</h4>
+                    <p class="text-muted">Начните с малого: отделяйте пластиковые бутылки от общего мусора. Это сокращает объем свалок на 30%.</p>
+                    <a href="#" class="btn btn-outline-success border-0 p-0 text-start">Читать далее <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card advice-card p-4">
+                    <span class="category-badge bg-health-light">Здоровье</span>
+                    <div class="icon-box bg-health-light">
+                        <i class="bi bi-droplet-fill"></i>
+                    </div>
+                    <h4>Водный баланс</h4>
+                    <p class="text-muted">Пейте не менее 1.5-2 литров чистой воды в день. Используйте многоразовую бутылку, чтобы беречь природу.</p>
+                    <a href="#" class="btn btn-outline-primary border-0 p-0 text-start">Читать далее <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card advice-card p-4">
+                    <span class="category-badge bg-warning-light">Воздух</span>
+                    <div class="icon-box bg-warning-light">
+                        <i class="bi bi-wind"></i>
+                    </div>
+                    <h4>Чистый воздух дома</h4>
+                    <p class="text-muted">Заведите Хлорофитум или Сансевиерию. Эти растения — природные фильтры, поглощающие токсины.</p>
+                    <a href="#" class="btn btn-outline-warning border-0 p-0 text-start">Читать далее <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card advice-card p-4">
+                    <span class="category-badge bg-eco-light">Эко-шопинг</span>
+                    <div class="icon-box bg-eco-light">
+                        <i class="bi bi-bag-check"></i>
+                    </div>
+                    <h4>Нет пакетам!</h4>
+                    <p class="text-muted">Одна тканевая сумка (шоппер) заменяет до 300 пластиковых пакетов в год. Всегда берите её с собой.</p>
+                    <a href="#" class="btn btn-outline-success border-0 p-0 text-start">Читать далее <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card advice-card p-4">
+                    <span class="category-badge bg-warning-light">Энергия</span>
+                    <div class="icon-box bg-warning-light">
+                        <i class="bi bi-lightbulb-off"></i>
+                    </div>
+                    <h4>Выключайте лишнее</h4>
+                    <p class="text-muted">Приборы в режиме ожидания потребляют энергию. Выключайте из розетки зарядки и технику на ночь.</p>
+                    <a href="#" class="btn btn-outline-warning border-0 p-0 text-start">Читать далее <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card advice-card p-4">
+                    <span class="category-badge bg-health-light">Активность</span>
+                    <div class="icon-box bg-health-light">
+                        <i class="bi bi-bicycle"></i>
+                    </div>
+                    <h4>Больше движения</h4>
+                    <p class="text-muted">Поездка на велосипеде вместо машины на расстояние 5 км предотвращает выброс 1 кг CO2 в атмосферу.</p>
+                    <a href="#" class="btn btn-outline-primary border-0 p-0 text-start">Читать далее <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center my-5">
+            <div class="p-5 bg-white rounded-20 shadow-sm border">
+                <h3>Хотите получить больше баллов?</h3>
+                <p>Применяйте советы на практике и загружайте отчеты в разделе квестов!</p>
+                <a href="{% url 'core:quests' %}" class="btn btn-success btn-lg rounded-pill px-5">Перейти к квестам</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-4 mt-5 text-muted border-top">
+        <p>&copy; 2026 EcoFamily. Здоровье планеты начинается с тебя.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% endblock %}

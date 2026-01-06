@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Контейнер игры, адаптированный под Django-шаблон */
+    .game-wrapper {
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
+        border-radius: 20px;
+        margin-top: 20px;
+    }
+
+    .game-container {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        max-width: 600px;
+        width: 100%;
+    }
+
+    .game-container h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .score-board {
+        text-align: center;
+        font-size: 1.2rem;
+        margin-bottom: 25px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+
+    .item-display {
+        background: #fff;
+        border: 2px dashed #2ecc71;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        margin-bottom: 30px;
+        min-height: 150px;
+        transition: all 0.3s ease;
+    }
+
+    .item-icon {
+        font-size: 70px;
+        margin-bottom: 10px;
+    }
+
+    .item-name {
+        font-size: 22px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .bins-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .bin-btn {
+        padding: 20px;
+        border: 2px solid transparent;
+        border-radius: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .bin-btn:hover {
+        transform: scale(1.03);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .bin-plastic { background: #fff3cd; color: #856404; }
+    .bin-paper { background: #d1ecf1; color: #0c5460; }
+    .bin-glass { background: #d4edda; color: #155724; }
+    .bin-mixed { background: #e2e3e5; color: #383d41; }
+
+    .feedback-msg {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-top: 20px;
+        height: 30px;
+    }
+
+    .correct { color: #27ae60; }
+    .wrong { color: #e74c3c; }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
+    }
+    .shake { animation: shake 0.4s ease-in-out; }
+</style>
+
+<div class="container">
+    <div class="game-wrapper">
+        <div class="game-container">
+            <h1>🌍 Эко-сортировка</h1>
+            
+            <div class="score-board">
+                <span class="text-success">✅ Верно: <span id="correct">0</span></span>
+                <span class="mx-3">|</span>
+                <span class="text-danger">❌ Ошибки: <span id="wrong">0</span></span>
+            </div>
+
+            <div class="item-display" id="itemDisplay">
+                <div class="item-icon" id="itemIcon">📦</div>
+                <div class="item-name" id="itemName">Загрузка...</div>
+            </div>
+
+            <div class="bins-grid">
+                <button class="bin-btn bin-plastic" onclick="checkAnswer('plastic')">
+                    <span>♻️</span> Пластик
+                </button>
+                <button class="bin-btn bin-paper" onclick="checkAnswer('paper')">
+                    <span>📄</span> Бумага
+                </button>
+                <button class="bin-btn bin-glass" onclick="checkAnswer('glass')">
+                    <span>🍾</span> Стекло
+                </button>
+                <button class="bin-btn bin-mixed" onclick="checkAnswer('mixed')">
+                    <span>🗑️</span> Смешанное
+                </button>
+            </div>
+
+            <div id="feedback" class="feedback-msg"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const items = [
+        { name: 'Пластиковая бутылка', icon: '🧴', type: 'plastic' },
+        { name: 'Старая газета', icon: '📰', type: 'paper' },
+        { name: 'Стеклянная банка', icon: '🫙', type: 'glass' },
+        { name: 'Огрызок яблока', icon: '🍎', type: 'mixed' },
+        { name: 'Картонная коробка', icon: '📦', type: 'paper' },
+        { name: 'Жестяная банка', icon: '🥫', type: 'mixed' },
+        { name: 'Стеклянный флакон', icon: '🧪', type: 'glass' },
+        { name: 'Пакет от чипсов', icon: '🍟', type: 'plastic' }
+    ];
+
+    let currentItem = null;
+    let scoreCorrect = 0;
+    let scoreWrong = 0;
+
+    function nextItem() {
+        currentItem = items[Math.floor(Math.random() * items.length)];
+        document.getElementById('itemIcon').textContent = currentItem.icon;
+        document.getElementById('itemName').textContent = currentItem.name;
+        document.getElementById('feedback').textContent = '';
+    }
+
+    function checkAnswer(choice) {
+        const feedback = document.getElementById('feedback');
+        const display = document.getElementById('itemDisplay');
+
+        if (choice === currentItem.type) {
+            scoreCorrect++;
+            document.getElementById('correct').textContent = scoreCorrect;
+            feedback.textContent = 'Отлично! +1';
+            feedback.className = 'feedback-msg correct';
+        } else {
+            scoreWrong++;
+            document.getElementById('wrong').textContent = scoreWrong;
+            feedback.textContent = 'Ой, не туда...';
+            feedback.className = 'feedback-msg wrong';
+            display.classList.add('shake');
+            setTimeout(() => display.classList.remove('shake'), 400);
+        }
+
+        // Ждем секунду и даем новый предмет
+        setTimeout(nextItem, 1000);
+    }
+
+    // Запуск первой итерации
+    nextItem();
+</script>
+{% endblock %}
