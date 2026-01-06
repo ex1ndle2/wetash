@@ -5,11 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.db import models
 from .models import User, Family, AirQuality, Quest, QuestCompletion, Reward, RewardRedemption
-from .forms import RegisterForm
+from .forms import RegisterForm , UserLoginForm 
 from .utils import fetch_air_quality
 import random
 import string
+from django.contrib.auth.views import LoginView 
 # @login_required
+@login_required
 def home(request):
     """Главная страница"""
     districts = ['Yunusabad', 'Chilanzar', 'Mirzo Ulugbek', 'Sergeli']
@@ -25,7 +27,7 @@ def home(request):
         'completed_quests': completed_quests
     })
 
-
+@login_required
 def air_quality_view(request):
     """Страница качества воздуха"""
     districts = AirQuality.objects.values('district').distinct()
@@ -43,7 +45,7 @@ def air_quality_view(request):
         'air': air
     })
 
-# @login_required
+@login_required
 def quests_view(request):
     """Страница квестов"""
     # Доступные квесты для текущего пользователя
@@ -61,7 +63,7 @@ def quests_view(request):
         'completed': completed
     })
 
-# @login_required
+@login_required
 def complete_quest(request, quest_id):
     """Выполнить квест"""
     quest = get_object_or_404(Quest, id=quest_id)
@@ -83,7 +85,7 @@ def complete_quest(request, quest_id):
     
     return render(request, 'complete_quest.html', {'quest': quest})
 
-# @login_required
+@login_required
 def approve_quest(request, completion_id):
     """Родитель одобряет квест ребёнка"""
     if request.user.role != 'parent':
@@ -99,7 +101,7 @@ def approve_quest(request, completion_id):
     
     return redirect('family')
 
-# @login_required
+@login_required
 def family_view(request):
     """Семейная статистика"""
     family = request.user.family
@@ -122,7 +124,7 @@ def family_view(request):
         'pending': pending
     })
 
-# @login_required
+@login_required
 def rewards_view(request):
     """Награды"""
     rewards = Reward.objects.filter(is_active=True)
@@ -134,7 +136,7 @@ def rewards_view(request):
         'my_points': request.user.points
     })
 
-# @login_required
+@login_required
 def redeem_reward(request, reward_id):
     """Получить награду"""
     reward = get_object_or_404(Reward, id=reward_id)
@@ -171,6 +173,7 @@ def advice_list(request):
 def game_view(request):
     return render(request, 'game.html')
 
-
-def login_view(request):
-    return render(request, 'registration/login.html')
+class LoginView(LoginView):
+    authentication_form = UserLoginForm
+    template_name = 'registration/login.html'
+    

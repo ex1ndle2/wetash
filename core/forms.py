@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User, Family
-
+from django.contrib.auth.forms import AuthenticationForm
 class RegisterForm(UserCreationForm):
     role = forms.ChoiceField(choices=User.ROLE_CHOICES)
     family_name = forms.CharField(max_length=100, required=False)
@@ -22,3 +22,19 @@ class RegisterForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+
+class UserLoginForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control form-control-lg',
+        'placeholder': 'Введите имя пользователя',
+        'autofocus': True
+    }))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control form-control-lg',
+        'placeholder': 'Введите пароль',
+    }))
+    remember = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={
+        'class': 'form-check-input'
+    }))

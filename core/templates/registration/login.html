@@ -1,94 +1,167 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Вход - EcoFamily{% endblock %}
+{% block title %}Вход | EcoFamily{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --eco-green: #2d6a4f;
+        --eco-light: #d8f3dc;
+        --eco-dark: #1b4332;
+    }
+
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .login-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .login-header {
+        background: linear-gradient(135deg, var(--eco-green) 0%, var(--eco-dark) 100%);
+        padding: 40px 20px;
+        color: white;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--eco-green);
+        box-shadow: 0 0 0 0.25rem rgba(45, 106, 79, 0.1);
+    }
+
+    .btn-eco {
+        background-color: var(--eco-green);
+        color: white;
+        border-radius: 10px;
+        padding: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-eco:hover {
+        background-color: var(--eco-dark);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .info-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        color: white;
+        border: none;
+    }
+
+    .icon-box {
+        background: rgba(255, 255, 255, 0.2);
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card shadow-lg">
-            <div class="card-header text-center" style="background: linear-gradient(135deg, var(--eco-green) 0%, var(--eco-dark) 100%); color: white; padding: 30px;">
-                <i class="bi bi-box-arrow-in-right" style="font-size: 3rem;"></i>
-                <h2 class="mt-3 mb-0">Вход в EcoFamily</h2>
-                <p class="mb-0">Продолжайте свой эко-путь</p>
-            </div>
-            <div class="card-body p-4">
-                {% if form.errors %}
-                <div class="alert alert-danger">
-                    <i class="bi bi-exclamation-triangle"></i> Неверное имя пользователя или пароль
-                </div>
-                {% endif %}
-                
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <!-- Имя пользователя -->
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            
+            <div class="card login-card shadow-lg mb-4">
+                <div class="login-header text-center">
                     <div class="mb-3">
-                        <label class="form-label">
-                            <i class="bi bi-person"></i> Имя пользователя
-                        </label>
-                        <input type="text" class="form-control form-control-lg" name="username" required 
-                               placeholder="Введите имя пользователя" autofocus>
+                        <i class="bi bi-tree-fill" style="font-size: 3.5rem;"></i>
                     </div>
-                    
-                    <!-- Пароль -->
-                    <div class="mb-4">
-                        <label class="form-label">
-                            <i class="bi bi-lock"></i> Пароль
-                        </label>
-                        <input type="password" class="form-control form-control-lg" name="password" required 
-                               placeholder="Введите пароль">
+                    <h2 class="fw-bold">EcoFamily</h2>
+                    <p class="opacity-75 mb-0">Добро пожаловать обратно!</p>
+                </div>
+
+                <div class="card-body p-4 p-lg-5">
+                    {% if form.errors %}
+                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                        <i class="bi bi-exclamation-circle-fill me-2"></i>
+                        <div>Ошибка: проверьте имя пользователя и пароль.</div>
                     </div>
-                    
-                    <!-- Запомнить меня -->
-                    <div class="form-check mb-4">
-                        <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                        <label class="form-check-label" for="remember">
-                            Запомнить меня
-                        </label>
-                    </div>
-                    
-                    <!-- Кнопка входа -->
-                    <button type="submit" class="btn btn-eco w-100 btn-lg mb-3">
-                        <i class="bi bi-check-circle"></i> Войти
-                    </button>
-                    
-                    <!-- Ссылки -->
-                    <div class="text-center">
-                        <a href="#" class="text-decoration-none small text-muted">Забыли пароль?</a>
-                    </div>
-                    
-                    <hr class="my-4">
-                    
-                    <!-- Регистрация -->
-                    <div class="text-center">
-                        <p class="text-muted mb-2">Ещё нет аккаунта?</p>
-                        <a href="{% url 'core:register' %}" class="btn btn-outline-success w-100">
-                            <i class="bi bi-person-plus"></i> Создать аккаунт
-                        </a>
-                    </div>
-                </form>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-person me-1"></i> Имя пользователя
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">{{ form.username.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.password.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-lock me-1"></i> Пароль
+                            </label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="text-danger small mt-1">{{ form.password.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                {{ form.remember }}
+                                <label class="form-check-label small text-muted" for="{{ form.remember.id_for_label }}">
+                                    Запомнить меня
+                                </label>
+                            </div>
+                            <a href="#" class="small text-decoration-none" style="color: var(--eco-green);">Забыли пароль?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-eco w-100 shadow-sm mb-4">
+                            Войти в аккаунт <i class="bi bi-arrow-right-short ms-1"></i>
+                        </button>
+
+                        <div class="text-center">
+                            <p class="text-muted small mb-0">Ещё нет аккаунта?</p>
+                            <a href="{% url 'core:register' %}" class="fw-bold text-decoration-none" style="color: var(--eco-green);">
+                                Создать семейный профиль
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-        
-        <!-- Дополнительная информация -->
-        <div class="card mt-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-            <div class="card-body text-center p-4">
-                <h5 class="mb-3">Почему EcoFamily?</h5>
-                <div class="row">
-                    <div class="col-4">
-                        <i class="bi bi-trophy" style="font-size: 2rem;"></i>
-                        <p class="small mb-0 mt-2">Квесты</p>
-                    </div>
-                    <div class="col-4">
-                        <i class="bi bi-gift" style="font-size: 2rem;"></i>
-                        <p class="small mb-0 mt-2">Награды</p>
-                    </div>
-                    <div class="col-4">
-                        <i class="bi bi-people" style="font-size: 2rem;"></i>
-                        <p class="small mb-0 mt-2">Семья</p>
+
+            <div class="card info-card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="row text-center">
+                        <div class="col-4 border-end border-white border-opacity-25">
+                            <i class="bi bi-stars d-block mb-1 fs-3"></i>
+                            <span class="small fw-light">Бонусы</span>
+                        </div>
+                        <div class="col-4 border-end border-white border-opacity-25">
+                            <i class="bi bi-shield-check d-block mb-1 fs-3"></i>
+                            <span class="small fw-light">Эко-квесты</span>
+                        </div>
+                        <div class="col-4">
+                            <i class="bi bi-heart d-block mb-1 fs-3"></i>
+                            <span class="small fw-light">Семья</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
