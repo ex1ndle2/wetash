@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=ecofamily
+      - POSTGRES_USER=muza
+      - POSTGRES_PASSWORD=123
+
+  web:
+    build: .
+    tty : true
+    stdin_open : true
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://muza:123@db:5432/custom_erp
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
