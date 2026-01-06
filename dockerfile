@@ -24,4 +24,4 @@ COPY . .
 RUN python manage.py collectstatic --noinput
 
 # Railway сам подставит нужный PORT через переменную окружения
-CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+CMD sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:10000"
