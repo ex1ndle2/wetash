@@ -169,3 +169,7 @@ def advice_list(request):
 
 def game_view(request):
     return render(request, 'game.html')
+
+
+def login_view(request):
+    return render(request, 'registration/login.html')
