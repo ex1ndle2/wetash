@@ -9,7 +9,7 @@ from .forms import RegisterForm
 from .utils import fetch_air_quality
 import random
 import string
-@login_required
+# @login_required
 def home(request):
     """Главная страница"""
     districts = ['Yunusabad', 'Chilanzar', 'Mirzo Ulugbek', 'Sergeli']
@@ -24,6 +24,7 @@ def home(request):
         'air_data': air_data,
         'completed_quests': completed_quests
     })
+
 
 def air_quality_view(request):
     """Страница качества воздуха"""
@@ -42,7 +43,7 @@ def air_quality_view(request):
         'air': air
     })
 
-@login_required
+# @login_required
 def quests_view(request):
     """Страница квестов"""
     # Доступные квесты для текущего пользователя
@@ -60,7 +61,7 @@ def quests_view(request):
         'completed': completed
     })
 
-@login_required
+# @login_required
 def complete_quest(request, quest_id):
     """Выполнить квест"""
     quest = get_object_or_404(Quest, id=quest_id)
@@ -82,7 +83,7 @@ def complete_quest(request, quest_id):
     
     return render(request, 'complete_quest.html', {'quest': quest})
 
-@login_required
+# @login_required
 def approve_quest(request, completion_id):
     """Родитель одобряет квест ребёнка"""
     if request.user.role != 'parent':
@@ -98,7 +99,7 @@ def approve_quest(request, completion_id):
     
     return redirect('family')
 
-@login_required
+# @login_required
 def family_view(request):
     """Семейная статистика"""
     family = request.user.family
@@ -121,7 +122,7 @@ def family_view(request):
         'pending': pending
     })
 
-@login_required
+# @login_required
 def rewards_view(request):
     """Награды"""
     rewards = Reward.objects.filter(is_active=True)
@@ -133,7 +134,7 @@ def rewards_view(request):
         'my_points': request.user.points
     })
 
-@login_required
+# @login_required
 def redeem_reward(request, reward_id):
     """Получить награду"""
     reward = get_object_or_404(Reward, id=reward_id)
